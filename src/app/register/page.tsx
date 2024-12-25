@@ -2,23 +2,25 @@
 
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register, selectUserStatus } from "@/redux/slices/userSlice";
+import {
+  register,
+  selectUserStatus,
+  USER_STATUS,
+} from "@/redux/slices/userSlice";
 import Link from "next/link";
 import "./register.css";
 
 const Register = () => {
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const status = useSelector(selectUserStatus);
   const users = useSelector((state: any) => state.user.users);
   const dispatch = useDispatch();
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
     if (name && email && password) {
-
       dispatch(
         register({
           name,
@@ -33,7 +35,7 @@ const Register = () => {
     }
   };
 
-  console.log(useSelector((state: any) => state.user.users))
+  // console.log(useSelector((state: any) => state.user.users));
 
   return (
     <div className="login">
@@ -57,13 +59,20 @@ const Register = () => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
         />
+
         <button type="submit" className="submit_button">
           Register
         </button>
       </form>
+      {status === USER_STATUS.REGISTER_FAILED && (
+        <p style={{ color: "red" }}>The Email Account Already Exists</p>
+      )}
 
       <p>
-        Already have an account? <Link style={{ color: 'blue' }} href="/login">Login</Link>
+        Already have an account?{" "}
+        <Link style={{ color: "blue" }} href="/login">
+          Login
+        </Link>
       </p>
 
       <h2>Registered Users</h2>

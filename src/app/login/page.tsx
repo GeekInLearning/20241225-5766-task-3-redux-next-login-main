@@ -4,11 +4,15 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import "./login.css";
-import { login, selectUserStatus } from "@/redux/slices/userSlice";
+import {
+  IStateUserSlice,
+  login,
+  selectUserStatus,
+  USER_STATUS,
+} from "@/redux/slices/userSlice";
 import Link from "next/link";
 
 const Login = () => {
-
   const status = useSelector(selectUserStatus);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,13 +26,14 @@ const Login = () => {
       login({
         email: email,
         password: password,
-        status: 'loggedIn',
+        status: USER_STATUS.LOGGED_IN,
       })
     );
   };
 
-  const users = useSelector((state: any) => state.user.users);
-
+  const users = useSelector(
+    (state: { user: IStateUserSlice }) => state.user.users
+  );
 
   useEffect(() => {
     if (status === "loggedIn") {
@@ -56,8 +61,10 @@ const Login = () => {
           submit
         </button>
       </form>
-      {status === "loginFailed" && (
-        <p style={{ color: "red" }}>Login failed. Incorrect email or password.</p>
+      {status === USER_STATUS.LOGIN_FAILED && (
+        <p style={{ color: "red" }}>
+          Login failed. Incorrect email or password.
+        </p>
       )}
 
       {users.length > 0 ? (
@@ -71,7 +78,12 @@ const Login = () => {
           ))}
         </ul>
       ) : (
-        <p>No registered users yet.   <Link style={{ color: 'blue' }} href="/register">Register</Link></p>
+        <p>
+          No registered users yet.{" "}
+          <Link style={{ color: "blue" }} href="/register">
+            Register
+          </Link>
+        </p>
       )}
     </div>
   );
